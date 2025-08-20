@@ -14,28 +14,123 @@
     header h1 { font-size: 18px; margin: 0; }
     .frame-wrap { position: relative; width: 100%; aspect-ratio: 16 / 9; }
     .frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    
+    /* Login styles */
+    .login-container { 
+      width: min(100%, 400px); 
+      background: #0b1220; 
+      border: 1px solid #1e293b; 
+      border-radius: 16px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,.25); 
+      padding: 32px;
+      text-align: center;
+    }
+    .login-container h1 { margin: 0 0 24px 0; font-size: 24px; }
+    .login-form { display: flex; flex-direction: column; gap: 16px; }
+    .login-form input { 
+      padding: 12px 16px; 
+      border: 1px solid #1e293b; 
+      border-radius: 8px; 
+      background: #1e293b; 
+      color: #e2e8f0; 
+      font-size: 16px;
+    }
+    .login-form input:focus { 
+      outline: none; 
+      border-color: #3b82f6; 
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .login-form button { 
+      padding: 12px 24px; 
+      background: #3b82f6; 
+      color: white; 
+      border: none; 
+      border-radius: 8px; 
+      font-size: 16px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: background 0.2s;
+    }
+    .login-form button:hover { background: #2563eb; }
+    .error-message { 
+      color: #ef4444; 
+      font-size: 14px; 
+      margin-top: 8px; 
+      display: none;
+    }
+    .content { display: none; }
+    .content.authenticated { display: block; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <header>
-      <img src="https://meetmonolith.s3.eu-central-1.amazonaws.com/logo_white.svg" alt="Logo">
-      <h1>Entrance, Reside rugs, Transition and Portal</h1>
-    </header>
-    <div class="frame-wrap">
-      <iframe width="853" height="480" src="https://my.matterport.com/show/?m=vt1n3FjC1xn" frameborder="0" allowfullscreen allow="autoplay; fullscreen; web-share; xr-spatial-tracking;"></iframe>
+  <!-- Login Screen -->
+  <div class="login-container" id="loginScreen">
+    <img src="https://meetmonolith.s3.eu-central-1.amazonaws.com/logo_white.svg" alt="Storedna Logo" style="height: 48px; margin-bottom: 24px;">
+    <h1>🔐 Access Required</h1>
+    <form class="login-form" id="loginForm">
+      <input type="password" id="password" placeholder="Enter password" required>
+      <button type="submit">Login</button>
+      <div class="error-message" id="errorMessage">Incorrect password. Please try again.</div>
+    </form>
+  </div>
+
+  <!-- Protected Content -->
+  <div class="content" id="content">
+    <div class="card">
+      <header>
+        <img src="https://meetmonolith.s3.eu-central-1.amazonaws.com/logo_white.svg" alt="Logo">
+        <h1>Entrance, Reside rugs, Transition and Portal</h1>
+      </header>
+      <div class="frame-wrap">
+        <iframe width="853" height="480" src="https://my.matterport.com/show/?m=vt1n3FjC1xn" frameborder="0" allowfullscreen allow="autoplay; fullscreen; web-share; xr-spatial-tracking;"></iframe>
+      </div>
+    </div>
+
+    <div class="card">
+      <header>
+        <img src="https://meetmonolith.s3.eu-central-1.amazonaws.com/logo_white.svg" alt="Logo">
+        <h1>Customer service, pickup and delivery</h1>
+      </header>
+      <div class="frame-wrap">
+        <iframe width="853" height="480" src="https://my.matterport.com/show/?m=tFqQbvzLJV9" frameborder="0" allowfullscreen allow="autoplay; fullscreen; web-share; xr-spatial-tracking;"></iframe>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <header>
-      <img src="https://meetmonolith.s3.eu-central-1.amazonaws.com/logo_white.svg" alt="Logo">
-      <h1>Customer service, pickup and delivery</h1>
-    </header>
-    <div class="frame-wrap">
-      <iframe width="853" height="480" src="https://my.matterport.com/show/?m=tFqQbvzLJV9" frameborder="0" allowfullscreen allow="autoplay; fullscreen; web-share; xr-spatial-tracking;"></iframe>
-    </div>
-  </div>
+  <script>
+    const CORRECT_PASSWORD = 'fidelio';
+    const loginScreen = document.getElementById('loginScreen');
+    const content = document.getElementById('content');
+    const loginForm = document.getElementById('loginForm');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Check if already authenticated
+    if (sessionStorage.getItem('authenticated') === 'true') {
+      showContent();
+    }
+
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const password = passwordInput.value;
+      
+      if (password === CORRECT_PASSWORD) {
+        sessionStorage.setItem('authenticated', 'true');
+        showContent();
+        errorMessage.style.display = 'none';
+        passwordInput.value = '';
+      } else {
+        errorMessage.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    });
+
+    function showContent() {
+      loginScreen.style.display = 'none';
+      content.classList.add('authenticated');
+    }
+  </script>
 </body>
 </html>
 
