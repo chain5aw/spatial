@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: spatial
+    env: static
+    # No build step needed for a single HTML file
+    buildCommand: ""
+    # Publish the repo root (where index.html lives)
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: true
+
