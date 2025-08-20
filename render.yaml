@@ -4,7 +4,7 @@ services:
     env: static
     # No build step needed for a single HTML file
     buildCommand: ""
-    # Publish the repo root (where index.html lives)
-    staticPublishPath: .
+    # Publish directory expected by Render service config
+    staticPublishPath: frontend
     pullRequestPreviewsEnabled: true
 
